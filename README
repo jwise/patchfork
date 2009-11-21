@@ -1,3 +1,14 @@
+-- NOTE --
+This is not an official release of Pitchfork.  This patched version is not
+supported by the original maintainers (and is not supported in any official
+capacity by me).
+
+If you have questions or patches or comments or patches or complaints or
+patches, please e-mail me:
+  Joshua Wise <jwise+pitchfork at andrew dot cmu dot edu>
+
+-- END NOTE --
+
 
 1. Installation
 	see doc/INSTALL

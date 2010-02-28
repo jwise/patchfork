@@ -104,7 +104,8 @@
 	}
 	if(isset($_POST['submit'])) {
 		$vars = array( 'mpd_host', 'mpd_port', 'mpd_pass', 'login_pass', 'update_delay', 
-				'metadata_disable', 'theme', 'stop_button', 'shout_url', 'pagination', 'lang');
+				'metadata_disable', 'theme', 'stop_button', 'shout_url', 'pagination', 'lang',
+				'aws_keyid', 'aws_secret');
 		foreach ($vars as $var) {
 			$add = "";
 			if(isset($_POST[$var])&&trim($_POST[$var])!="") 
@@ -119,6 +120,10 @@
 				if($add== HASH_PASS)
 					continue;
 				$add = generate_hash($add);
+			}
+			else if ($var=='aws_secret') {
+				if ($add == HASH_PASS)
+					continue;
 			}
 
 			
@@ -265,9 +270,18 @@ for($i=0; $i<$length;$i++) {
 <tr><td>&nbsp;</td><td><input type='checkbox' disabled='disabled' checked='checked' id='tnode_2' /> <label for='tnode_2'> Time</label></td></tr>
 </table>
 <h2>Metadata</h2>
-<p><?php echo m("Configuration for retrieving metadata. This requires that the machine pitchfork is running on can access the internet."); ?></p>
+<p><?php echo m("Configuration for retrieving metadata. This requires that the machine Patchfork is running on can access the internet. ".
+                "In order to use this feature, you must now have an Amazon AWS account; to get one, <a href=\"http://aws.amazon.com\">visit aws.amazon.com</a>. ".
+                "Then, get an <a href=\"https://aws-portal.amazon.com/gp/aws/developer/account/index.html?ie=UTF8&action=access-key\">access key</a>, and fill in the details below."); ?></p>
 <table>
 <tr><td><?php echo m("Disable metadata:"); ?> </td><td><input type='checkbox' <?php echo get_checkbox_from_config('metadata_disable') ?> name='metadata_disable' /></td></tr>
+<tr><td><?php echo m("Amazon Access Key ID:"); ?></td><td><input type='text' width='20' value='<?php echo htmlspecialchars(get_config('aws_keyid', '')) ?>' name='aws_keyid' /></td></tr>
+<tr><td><?php echo m("Amazon Secret Access Key:"); ?></td><td><input type='password' width='40' value='<?
+	$pass = get_config('aws_secret', '');
+	if(strlen($pass) != 0) {
+		echo HASH_PASS;
+	}
+	?>' name='aws_secret' /></td></tr>
 </table>
 <h2><?php echo m("Shoutcast integration"); ?></h2>
 <p>

@@ -28,7 +28,9 @@
 	function amazonlink($params)
 	{
 		$params["SubscriptionId"] = "15BH771NY941TX2NKC02";
-		$res = aws_signed_request("com", $params, "Access Key ID", "Secret Access Key");
+		if (strlen(get_config("aws_secret")) == 0)
+			return False;
+		$res = aws_signed_request("com", $params, get_config("aws_keyid"), get_config("aws_secret"));
 		
 		return $res;
 	}

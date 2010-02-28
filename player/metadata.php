@@ -21,11 +21,17 @@
 	/* how much time must pass before we try searching for cover art again */
 	$COVER_SEARCH_AGAIN = 86400;
 
-	$amazon_base_url = "http://webservices.amazon.com/onca/xml?Service=AWSECommerceService&SubscriptionId="
-	            . "15BH771NY941TX2NKC02";
-	$amazon_review_url = $amazon_base_url . "&ResponseGroup=EditorialReview&Operation=";
+	include("aws_signed_request.php");
 	require_once("../inc/base.php");
 	require_once("metadata_cover.php");
+	
+	function amazonlink($params)
+	{
+		$params["SubscriptionId"] = "15BH771NY941TX2NKC02";
+		$res = aws_signed_request("com", $params, "Access Key ID", "Secret Access Key");
+		
+		return $res;
+	}
 	
 	/* metadata should not require locking of session */
 	session_write_close();
@@ -94,14 +100,14 @@
 	/* Queries amazon with the specified url, strict serach first and then a more careless one, 
 	 * will urlencode artist and albumname 
 	 * returns xml document or false upon failure */
-	function amazon_album_query($base_url, $artist, $album) {
+	function amazon_album_query($params) {
 		$stype = array("Title", "Keywords");
 		$artist = urlencode($artist);
 		$album = urlencode($album);
 		foreach($stype as $st) {
 			if(!amazon_wait())
 				return false;
-			$xml = @simplexml_load_string(@file_get_contents($base_url . "&Artist=$artist&$st=$album"));
+			$xml = amazonlink($params);
 			if($xml&&isset($xml->Items[0])&&isset($xml->Items[0]->Item[0]))
 				return $xml;
 		}
@@ -220,7 +226,7 @@
 
 
 	function get_cover() {
-		global $COVER_SEARCH_AGAIN, $amazon_base_url,$cover_providers;
+		global $COVER_SEARCH_AGAIN, $cover_providers;
 
 		list($fp, $artist, $album) = init_album_artist_or_die();
 
@@ -285,7 +291,7 @@
 	}
 
 	function get_review() {
-		global $amazon_review_url, $COVER_SEARCH_AGAIN;
+		global $COVER_SEARCH_AGAIN;
 
 		list($fp, $artist, $album) = init_album_artist_or_die();
 
@@ -318,13 +324,11 @@
 			}
 
 			if($xml&&isset($xml->asin[0])) {
-				$res = @file_get_contents($amazon_review_url . "ItemLookup&IdType=ASIN&ItemId=" . urlencode($xml->asin[0]));
-				if($res)
-					$res = @simplexml_load_string($res);
+				$res = amazonlink(array("Operation"=>"ItemLookup", "IdType"=>"ASIN", "ItemId"=>"urlencode($xml->asin[0])"));
 				$asin = false;
 			}
 			else {
-				$res = @amazon_album_query($amazon_review_url . "ItemSearch&SearchIndex=Music&Artist=" , $artist , $album);
+				$res = @amazon_album_query(array("Operation"=>"ItemSearch", "SearchIndex"=>"Music", "Artist"=>"$artist", "Album"=>"$album"));
 			}
 			if($res) {
 				if($res&&isset($res->Items[0])&&isset($res->Items[0]->Item[0])) {

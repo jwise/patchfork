@@ -17,7 +17,6 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-	$amazon_cover_url = $amazon_base_url . "&Operation=ItemSearch&SearchIndex=Music&ResponseGroup=Images";
 	$cover_providers = array("directory_cover", "amazon_search_cover");
 
 	/* If you want to use this you'll need php-gd as well */
@@ -30,7 +29,7 @@
 	function amazon_search_cover($artist, $album) {
 		global $amazon_cover_url, $metadata_dir;
 
-		$xml = amazon_album_query($amazon_cover_url, $artist, $album);
+		$xml = amazon_album_query(array("Operation"=>"ItemSearch", "SearchIndex"=>"Music", "ResponseGroup"=>"Images", "Artist"=>"$artist", "Album"=>"$album"));
 		if($xml) {
 			if(isset($xml->Items[0])&&isset($xml->Items[0]->Item[0])) {
 				$item = $xml->Items[0]->Item[0];

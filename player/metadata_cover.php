@@ -29,7 +29,7 @@
 	function amazon_search_cover($artist, $album) {
 		global $amazon_cover_url, $metadata_dir;
 
-		$xml = amazon_album_query(array("Operation"=>"ItemSearch", "SearchIndex"=>"Music", "ResponseGroup"=>"Images", "Artist"=>"$artist", "Album"=>"$album"));
+		$xml = amazon_album_query(array("Operation"=>"ItemSearch", "SearchIndex"=>"Music", "ResponseGroup"=>"Images", "Artist"=>"$artist"), $album);
 		if($xml) {
 			if(isset($xml->Items[0])&&isset($xml->Items[0]->Item[0])) {
 				$item = $xml->Items[0]->Item[0];

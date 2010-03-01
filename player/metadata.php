@@ -102,16 +102,18 @@
 	/* Queries amazon with the specified url, strict serach first and then a more careless one, 
 	 * will urlencode artist and albumname 
 	 * returns xml document or false upon failure */
-	function amazon_album_query($params) {
+	function amazon_album_query($params, $album) {
 		$stype = array("Title", "Keywords");
 		$artist = urlencode($artist);
 		$album = urlencode($album);
 		foreach($stype as $st) {
 			if(!amazon_wait())
 				return false;
+			$params[$st] = $album;
 			$xml = amazonlink($params);
 			if($xml&&isset($xml->Items[0])&&isset($xml->Items[0]->Item[0]))
 				return $xml;
+                        unset($params[$st]);
 		}
 		return false;
 	}
@@ -330,7 +332,7 @@
 				$asin = false;
 			}
 			else {
-				$res = @amazon_album_query(array("Operation"=>"ItemSearch", "SearchIndex"=>"Music", "Artist"=>"$artist", "Album"=>"$album"));
+				$res = @amazon_album_query(array("Operation"=>"ItemSearch", "SearchIndex"=>"Music", "Artist"=>"$artist"), $album);
 			}
 			if($res) {
 				if($res&&isset($res->Items[0])&&isset($res->Items[0]->Item[0])) {

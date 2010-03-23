@@ -213,6 +213,8 @@
 $themes = get_available_themes();
 $ctheme = get_config("theme", "default");
 foreach($themes as $theme) {
+	if ($theme == "mini")
+		continue;
 	echo "\n<option value='$theme' ";
 	if($theme==$ctheme)
 		echo "selected='selected' ";

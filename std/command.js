@@ -415,15 +415,17 @@ function current_status_handler(info, has_plchanges) {
 	if(state!=playing.state) {
 		playing.state = state;
 		var bt = playing.pp_button;
-		if(state=="play") {
-			bt.src = IMAGE.BUTTON_PAUSE;
-			if(typeof(window.streaming_try_autoplay)=='function')
-				streaming_try_autoplay();
-		}
-		else {
-			bt.src = IMAGE.BUTTON_PLAY;
-			if(typeof(window.streaming_try_autostop)=='function')
-				streaming_try_autostop();
+		if (bt) /* we must be in read write mode to show this */ {
+			if(state=="play") {
+				bt.src = IMAGE.BUTTON_PAUSE;
+				if(typeof(window.streaming_try_autoplay)=='function')
+					streaming_try_autoplay();
+			}
+			else {
+				bt.src = IMAGE.BUTTON_PLAY;
+				if(typeof(window.streaming_try_autostop)=='function')
+					streaming_try_autostop();
+			}
 		}
 	}
 	
@@ -595,22 +597,25 @@ function buttons_init() {
 	
 	/* player control */
 	var elem = document.getElementById('pp_button');
-	elem.src = IMAGE.BUTTON_PLAY;
-	add_listener(elem, "click", send_play_pause);
-	if(window.stop_button) {
-		elem = document.getElementById('stop_button');
-		elem.style.display = "";
-		elem.src = IMAGE.BUTTON_STOP;
-		add_listener(elem, "click", send_stop_cmd);
-		elem.parentNode.style.marginLeft = "-15px";
+	if (elem) /* we must be in read write mode to show these buttons */
+	{
+		elem.src = IMAGE.BUTTON_PLAY;
+		add_listener(elem, "click", send_play_pause);
+		if(window.stop_button) {
+			elem = document.getElementById('stop_button');
+			elem.style.display = "";
+			elem.src = IMAGE.BUTTON_STOP;
+			add_listener(elem, "click", send_stop_cmd);
+			elem.parentNode.style.marginLeft = "-15px";
+		}
+		
+		elem = document.getElementById("next_button");
+		elem.src = IMAGE.BUTTON_NEXT;
+		add_listener(elem, "click", send_next_song);
+		elem = document.getElementById("previous_button");
+		elem.src = IMAGE.BUTTON_PREVIOUS;
+		add_listener(elem, "click", send_previous_song);
 	}
-
-	elem = document.getElementById("next_button");
-	elem.src = IMAGE.BUTTON_NEXT;
-	add_listener(elem, "click", send_next_song);
-	elem = document.getElementById("previous_button");
-	elem.src = IMAGE.BUTTON_PREVIOUS;
-	add_listener(elem, "click", send_previous_song);
 
 	/* left menu buttons */
 	elem = document.getElementById("open_directory_button");

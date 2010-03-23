@@ -42,8 +42,15 @@ if(!is_theme_dir_ok($theme_dir . $selected_theme))
 
 $lpass = get_config('login_pass');
 
+$rw = true;
+$ro = false;
+if(isset($_SESSION['logged_in']) && ($_SESSION['logged_in'] == "ro")) {
+	$rw = false;
+	$ro = true;
+}
+
 if(!is_null($lpass)&&$lpass!="") {
-	if(!isset($_SESSION['logged_in'])||!$_SESSION['logged_in']) {
+	if(!isset($_SESSION['logged_in'])||!$_SESSION['logged_in'] || ($need_rw && !$rw)) {
 		if(!isset($no_require_login)) {
 			header("Location: login.php");
 			echo "Wrong password";
@@ -51,6 +58,7 @@ if(!is_null($lpass)&&$lpass!="") {
 		}
 	}
 }
+
 
 function get_config($name, $default = null) {
 	global $config;

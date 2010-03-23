@@ -44,6 +44,7 @@
 
 	$title = "";
 	@ob_start();
+	$need_rw = true;
 	require_once("../inc/base.php");
 	require_once("../lang/master.php");
 	header("Content-Type: text/html; charset=UTF-8");
@@ -104,7 +105,7 @@
 		$config = simplexml_load_string("<?xml version='1.0' ?>\n<root>\n</root>\n");
 	}
 	if(isset($_POST['submit'])) {
-		$vars = array( 'mpd_host', 'mpd_port', 'mpd_pass', 'login_pass', 'update_delay', 
+		$vars = array( 'mpd_host', 'mpd_port', 'mpd_pass', 'login_pass', 'ro_pass', 'update_delay', 
 				'metadata_disable', 'theme', 'stop_button', 'shout_url', 'pagination', 'lang',
 				'aws_keyid', 'aws_secret');
 		foreach ($vars as $var) {
@@ -117,7 +118,7 @@
 					$add = 0;
 				else $add = intval($add);
 			}
-			else if($var=="login_pass"&&strlen($add)>0) {
+			else if(($var=="login_pass" || $var == "ro_pass") &&strlen($add)>0) {
 				if($add== HASH_PASS)
 					continue;
 				$add = generate_hash($add);
@@ -206,6 +207,18 @@
 	}
 
 ?>' name='login_pass' /></td></tr>
+	<tr><td><?php echo m("View-only password (optional):");?>
+	</td><td><input type='password' title='<?php echo m("If you want to allow users to view and listen, but not modify, specify a view-only password here");?>' value='<?php 
+	
+	$pass = get_config('ro_pass', '');
+	if(substr($pass,0, 4)=="sha:") {
+		echo HASH_PASS;
+	}
+	else {
+		echo htmlspecialchars($pass);
+	}
+
+?>' name='ro_pass' /></td></tr>
 <tr><td><?php echo m("Theme:");?> </td>
 <td>
 <select name='theme'>

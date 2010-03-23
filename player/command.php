@@ -207,7 +207,7 @@
 		echo array_to_json($v);
 		exit();
 	}
-	else if(isset($_GET['add'])||isset($_GET['ma'])||isset($_GET['searchadd'])) {
+	else if(isset($_GET['add'])||isset($_GET['ma'])||isset($_GET['searchadd'])&&$rw) {
 		/* for automatic playback start */
 		try {
 			$s = $pl->getStatus();
@@ -225,7 +225,7 @@
 	if(isset($_GET['playlist'])) {
 		$act = $_GET['playlist'];
 		try {
-			if($act=="move"&&isset($_GET['from'])&&isset($_GET['to'])) {
+			if($act=="move"&&isset($_GET['from'])&&isset($_GET['to'])&&$rw) {
 				// todo: sanity check
 				$response = null; 
 				if($pl->moveSongId($_GET['from'], $_GET['to'])) 
@@ -253,7 +253,7 @@
 			$json = array ('result' => PF_FAILURE);
 		}
 	}
-	else if(isset($_GET['rangemove'])&&is_numeric(trim($_GET['rangemove']))&&isset($_GET['elems'])) {
+	else if(isset($_GET['rangemove'])&&is_numeric(trim($_GET['rangemove']))&&isset($_GET['elems'])&&$rw) {
 		$res = PF_FAILURE;
 		$dest = intval($_GET['rangemove']);
 		$pos_offset = 0;
@@ -293,7 +293,7 @@
 		$result = "pong";
 		$json = array("result" => $result);
 	}
-	else if(isset($_GET['volume'])&&is_numeric(trim($_GET['volume']))) {
+	else if(isset($_GET['volume'])&&is_numeric(trim($_GET['volume']))&&$rw) {
 		$res = PF_FAILURE;
 		try {
 			$volume = trim($_GET['volume']);
@@ -307,7 +307,7 @@
 		$json = array("result" => $res);
 	}
 	else if(isset($_GET['position'])&&is_numeric(trim($_GET['position']))
-		&& isset($_GET['id']) && is_numeric(trim($_GET['id']))) {
+		&& isset($_GET['id']) && is_numeric(trim($_GET['id'])) && $rw) {
 		$result = PF_FAILURE;
 		try {
 			$pos = trim($_GET['position']);
@@ -395,7 +395,7 @@
 		}
 		$json = array("result" => $res);
 	}
-	else if(isset($_GET['act'])) {
+	else if(isset($_GET['act']) && $rw) {
 		$act = trim($_GET['act']);
 		$result = "failure";
 		try {
@@ -438,7 +438,7 @@
 		}
 		$json = array("result" => $result);
 	}
-	else if(isset($_GET['add'])) {
+	else if(isset($_GET['add']) && $rw) {
 		$add = $_GET['add'];
 		try {
 			$res = PF_FAILURE;
@@ -451,7 +451,7 @@
 		}
 		$json = array("result" => $res);
 	}
-	else if(isset($_GET['remove'])) {
+	else if(isset($_GET['remove']) && $rw) {
 		$arr = selection_to_reverse_list($_GET['remove']);
 		$res = "ok";
 		try {
@@ -465,7 +465,7 @@
 		}
 		$json = array("result" => $res);
 	}
-	else if(isset($_GET['updatedb'])) {
+	else if(isset($_GET['updatedb']) && $rw) {
 		$res = PF_FAILURE;
 		try {
 			$adm = get_admin();
@@ -478,7 +478,7 @@
 		}
 		$json = array("result" => $res);
 	}
-	else if(isset($_GET['outputs'])||isset($_GET['output_e'])||isset($_GET['output_d'])) {
+	else if(isset($_GET['outputs'])||isset($_GET['output_e'])||isset($_GET['output_d']) && $rw) {
 		$res = PF_FAILURE;
 		try {
 			$admin = get_admin();
@@ -495,7 +495,7 @@
 		}
 		$json = array("result" => $res);
 	}
-	else if(isset($_GET['random'])) {
+	else if(isset($_GET['random'])&&$rw) {
 		$res = "failure";
 		try {
 			$play = get_playback(); 
@@ -510,7 +510,7 @@
 		$json = array("result" => $res);
 
 	}
-	else if(isset($_GET['repeat'])) {
+	else if(isset($_GET['repeat'])&&$rw) {
 		$res = "failure";
 		try {
 			$play = get_playback(); 
@@ -524,7 +524,7 @@
 		}
 		$json = array("result" => $res);
 	}
-	else if(isset($_GET['xfade'])&&is_numeric($_GET['xfade'])) {
+	else if(isset($_GET['xfade'])&&is_numeric($_GET['xfade'])&&$rw) {
 		$res = PF_FAILURE;
 		try {
 			$play = get_playback(); 
@@ -587,7 +587,7 @@
 				$params["Album"] = $album;
 
 
-			if(isset($_GET['searchadd'])) {
+			if(isset($_GET['searchadd'])&&$rw) {
 				if(search_add($db, $pl, $params)) {
 					$res = "ok";
 					$something_added = true;
@@ -708,7 +708,7 @@
 		}
 		$json = array("result" => $res);
 	}
-	else if(isset($_GET['ma'])) {
+	else if(isset($_GET['ma'])&&$rw) {
 		/* note to self: should merge single add with this */
 		$res = PF_FAILURE;
 		if (!isset($HTTP_RAW_POST_DATA))
@@ -755,7 +755,7 @@
 		$json = array("result" => $res);
 	}
 	else if(isset($_GET['playlist_rm'])||isset($_GET['playlist_load'])
-		||isset($_GET['playlist_save'])||isset($_GET['playlist_add_url'])) {
+		||isset($_GET['playlist_save'])||isset($_GET['playlist_add_url'])&&$rw) {
 
 		$res = false;
 		try {

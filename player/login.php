@@ -19,24 +19,38 @@
 	$error = false;
 	$no_require_login = "true";
 	require_once("../inc/base.php");
-	if(isset($_POST['password'])) {
+	if(isset($_POST['password']) && $_POST['password'] != "") {
 		$pass = get_config("login_pass");
 		if(substr($pass,0, 4)=="sha:") {
 			if(check_hash($pass, trim($_POST['password']))) {
-				$_SESSION['logged_in'] = true;
+				$_SESSION['logged_in'] = "rw";
 				header("Location: index.php");
 				exit(); 
 			}
 			$error = "Login failed";
 		}
 		else if($pass==trim($_POST['password'])) {
-			$_SESSION['logged_in'] = true;
+			$_SESSION['logged_in'] = "rw";
 			header("Location: index.php");
 			exit(); 
 		}
-		else {
+		
+		$pass = get_config("ro_pass");
+		if(substr($pass,0, 4)=="sha:") {
+			if(check_hash($pass, trim($_POST['password']))) {
+				$_SESSION['logged_in'] = "ro";
+				header("Location: index.php");
+				exit(); 
+			}
 			$error = "Login failed";
 		}
+		else if($pass==trim($_POST['password'])) {
+			$_SESSION['logged_in'] = "ro";
+			header("Location: index.php");
+			exit(); 
+		}
+
+		$error = "Login failed";
 	}
 	else if(isset($_GET['logout'])) {
 		session_destroy();

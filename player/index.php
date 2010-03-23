@@ -68,10 +68,14 @@
 
 	<div class='pc_ci' >
 		<div class='nomargin'>
+	<? if ($ro) { ?>
+		<b>[<?=m("view only")?>]</b><br>
+	<? } else { ?>
 		<img id='previous_button' class='act_button fakelink'/>
 		<img id='stop_button' style='display: none; ' class='act_button fakelink' />
 		<img id='pp_button' class='act_button fakelink' />
 		<img id='next_button' class='act_button fakelink'/>
+	<? } ?>
 		</div>
 		<p class='disp'><span id="disp_info"></span></p>
 		<input type='text' id='quickadd' value='<?php echo m("Quick add"); ?>' />
@@ -96,6 +100,11 @@
 		<li class='menuitem fakelink' title='<?php echo m("Search current playlist"); ?>' 
 				id='playlist_search_btn' ><?php echo m("Search playlist"); ?></li>
 		<li class='menuitem' ><a class='pc_other' href='config.php'><?php echo m("Configure"); ?></a></li>
+		<? if ($ro) { ?>
+			<li class='menuitem' ><a class='pc_other' href='login.php'><?php echo m("Log in"); ?></a></li>
+		<? } else if (isset($_SESSION['logged_in'])) { ?>
+			<li class='menuitem' ><a class='pc_other' href='login.php?logout'><?php echo m("Log out"); ?></a></li>
+		<? } ?>
 
 		<?php 
 		if(!is_null(get_config("shout_url"))) 

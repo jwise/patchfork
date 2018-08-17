@@ -1,14 +1,21 @@
--- NOTE --
+Patchfork is a fork of the excellent Pitchfork MPD client.  The original
+author, Roger Bystrøm ("remiss"), appears to have fallen off the face of the
+Internet, and along with him, the Pitchfork web site.  Patchfork, then, is
+my bug fix (and maybe feature?) branch.  It is also a lot more Googlable of
+a name than Pitchfork.  The fork started when I needed to update it because
+of a format change in the MPD 0.15.0 (?) `status` query response.
+
+You can find the old Pitchfork site on archive.org: 
+
+  http://web.archive.org/web/20080204095711/pitchfork.remiss.org/
+
 This is not an official release of Pitchfork.  This patched version is not
 supported by the original maintainers (and is not supported in any official
 capacity by me).
 
 If you have questions or patches or comments or patches or complaints or
 patches, please e-mail me:
-  Joshua Wise <jwise+pitchfork at andrew dot cmu dot edu>
-
--- END NOTE --
-
+  Joshua Wise <jwise+pitchfork at joshuawise dot com>
 
 1. Installation
 	see doc/INSTALL
